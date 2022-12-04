@@ -1,0 +1,33 @@
+What are the steps to make the backend ready for deployment?
+Create Database and Table
+Create a database and name it tutorial.
+Create a table and name it tutorial.
+Create a Login/Group Role and name it tutorial . (Do not forget to give it all privileges.)
+
+
+Move all the db credentials to the .env folder and dont care about the other credential which are there.
+To save passwords and secret keys in environment variables on Windows, you will need to open Advance System Setting. You can navigate to control panel >
+System and Security > System > Advanced system Settings . Now in Advance System Setting click on Environment Variables .
+
+Explain each and every step for connecting RDS to EC2 instance.
+
+To connect an EC2 instance and an RDS database automatically Sign in to the AWS Management Console and open the Amazon RDS console at https://console.aws.amazon.com/rds/ . 
+In the navigation pane, choose Databases, and then choose the RDS database. For Actions, choose Set up EC2 connection.
+
+Explain the steps for connecting mysqlworkbench to RDS Database
+Launch MySQL Workbench.
+Click the “+” symbol in the “MySQL Connections” tab to add a new connection.
+Configure the connection as follows: ...
+Click “Test Connection” to test the connection.
+If the connection is successful, click “OK” to save the connection.
+
+
+How do we integrate backend to frontend.
+An integration-first approach. Based on the project requirements, the backend development team develops the integration layer exposing the existing systems. 
+The backend teams expose the backend services through REST APIs. Then, the frontend team starts connecting their web and mobile applications to these APIs.
+
+What is the strategy we use for deploying frontend.
+
+Sign in to the AWS Management Console and open the Amplify console .
+On the All apps page, choose New app, then Host web app in the upper right corner.
+Select your GitHub, Bitbucket, GitLab, or AWS CodeCommit repository provider and then choose Continue.
