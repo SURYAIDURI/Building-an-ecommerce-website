@@ -1,0 +1,120 @@
+const fs = require('fs');
+const pdf = require('pdf-creator-node');
+const path = require('path');
+const options = require('../helpers/options');
+const data = require('../helpers/data');
+
+
+const homeview = (req, res, next) => {
+    res.render('home');
+}
+
+const generatePdf = async (req, res, next) => {
+        const html = fs.readFileSync(path.join(__dirname, '../views/template.html'), 'utf-8');
+        const filename = Math.random() + '_doc' + '.pdf';
+        let array = [];
+
+        data.forEach(d => {
+            const prod = {
+                name: d.name,
+                description: d.description,
+                unit: d.unit,
+                quantity: d.quantity,
+                price: d.price,
+                total: d.quantity * d.price,
+                imgurl: d.imgurl
+            }
+            array.push(prod);
+        });
+
+        let subtotal = 0;
+        array.forEach(i => {
+            subtotal += i.total
+        });
+        const tax = (subtotal * 20) / 100;
+        const grandtotal = subtotal - tax;
+        const obj = {
+            prodlist: array,
+            subtotal: subtotal,
+            tax: tax,
+            gtotal: grandtotal
+        }
+        const document = {
+            html: html,
+            data: {
+                products: obj
+            },
+            path: './docs/' + filename
+        }
+        pdf.create(document, options)
+            .then(res => {
+                console.log(res);
+            }).catch(error => {
+                console.log(error);
+            });
+            const filepath = 'http://localhost:3000/docs/' + filename;
+
+            res.render('download', {
+                path: filepath
+            });
+}
+
+
+module.exports = {
+    homeview,
+    generatePdf
+}
+const express = require('express');
+const {homeview, generatePdf}  = require('../controllers/homeController');
+
+const router = express.Router();
+
+router.get('/', homeview);
+router.get('/download', generatePdf);
+
+module.exports = {
+    routes: router
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node Pdf Creator</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Node js</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarColor02">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Create Pdf Document 
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="container"><%- body %></div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+<h3>Generate PDF Document With Node JS</h3>
+<a href="/download" class="btn btn-success">Generate Pdf</a>\
+
+
+
