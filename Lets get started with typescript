@@ -1,0 +1,47 @@
+// const fs = require('fs/promises');
+import fs from 'fs/promises';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export const resHandler = (req, res, next) => {
+  fs.readFile('my-page.html', 'utf8')
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // res.sendFile(path.join(__dirname, 'my-page.html'));
+};
+
+// module.exports = resHandler;
+// export default resHandler;
+// const express = require('express');
+import express from 'express';
+
+// const resHandler = require('./response-handler');
+import { resHandler } from './response-handler.js';
+
+const app = express();
+
+app.get('/', resHandler);
+
+app.listen(3000);
+{
+  "name": "complete-guide",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
